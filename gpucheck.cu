@@ -1,6 +1,11 @@
 #include <iostream>
 
 void checkGPU(){
+	int dev_check = 0;
+	cudaGetDeviceCount(&dev_check);
+
+	if (dev_check) { std::cout << "No GPU available\n"; return; }
+
 	cudaDeviceProp info;
 	int deviceID = 0;
 	cudaGetDevice(&deviceID);
@@ -16,33 +21,8 @@ void checkGPU(){
 	std::cout << "Total shared memory for multiprocesser: " << info.sharedMemPerBlock << " bytes" << std::endl;
 }
 
-// __device__ void gauss(float * A, float * C){
-// 	int i = threadIdx.x;
-// 	C[i] = C[i] + A[i];
-// }
-
 int main(int argc, char ** argv) {
 	checkGPU();
-
-	float * h_A, * d_A, * h_C, * d_C;
-
-	h_A = (float*) malloc(10 *sizeof(float));
-	h_C = (float*) malloc(10 *sizeof(float));
-
-	cudaMalloc((float**) &d_A, 10 * sizeof(float));
-	cudaMalloc((float**) &d_C, 10 * sizeof(float));
-
-	for (int i = 0; i < 10; ++i){
-		h_A[i] = i;
-		h_C[i] = i;
-	}
-
-
-	cudaFree(d_A);
-	cudaFree(d_C);
-
-	free(h_A);
-	free(h_C);
 
 	return 0;
 }
